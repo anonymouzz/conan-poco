@@ -6,8 +6,8 @@ language: python
 env:
   global:
     - CONAN_UPLOAD=1
-    - CONAN_REFERENCE="Poco/1.7.3"
-    - CONAN_USERNAME="lasote"
+    - CONAN_REFERENCE="Poco/1.7.5.1"
+    - CONAN_USERNAME="anonymouz"
     - CONAN_CHANNEL="ci"
     - CONAN_TOTAL_PAGES=4
 

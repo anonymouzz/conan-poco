@@ -1,14 +1,15 @@
 from conans import ConanFile
 from conans.tools import download, unzip, replace_in_file
 import os
+import sys
 import shutil
 from conans import CMake
 
 
 class PocoConan(ConanFile):
     name = "Poco"
-    version = "1.7.3"
-    url="http://github.com/lasote/conan-poco"
+    version = "1.7.5.1"
+    url="http://github.com/anonymouzz/conan-poco"
     exports = "CMakeLists.txt"
     generators = "cmake", "txt"
     settings = "os", "arch", "compiler", "build_type"
@@ -42,7 +43,7 @@ class PocoConan(ConanFile):
 shared=False
 enable_xml=True
 enable_json=True
-enable_mongodb=True
+enable_mongodb=False
 enable_pdf=False
 enable_util=True
 enable_net=True
@@ -68,7 +69,7 @@ cxx_14=False
 
     def source(self):
         zip_name = "poco-%s-release.zip" % self.version
-        download("https://github.com/pocoproject/poco/archive/%s" % zip_name, zip_name)
+        download("https://github.com/anonymouzz/poco/archive/%s" % zip_name, zip_name)
         unzip(zip_name)
         shutil.move("poco-poco-%s-release" % self.version, "poco")
         os.unlink(zip_name)
@@ -86,7 +87,7 @@ cxx_14=False
         else:
             if "OpenSSL" in self.requires:
                 del self.requires["OpenSSL"]
-                
+
         if self.options.enable_data_mysql:
             self.requires.add("MySQLClient/6.1.6@hklabbers/stable")
         else:
@@ -106,9 +107,9 @@ cxx_14=False
             else:
                the_option += "ON" if activated else "OFF"
             cmake_options.append(the_option)
-            
+
         options_poco = " -D".join(cmake_options)
-        
+
         if self.settings.os == "Windows":
             if self.settings.compiler.runtime == "MT" or self.settings.compiler.runtime == "MTd":
                 options_poco += " -DPOCO_MT=ON"
@@ -146,7 +147,7 @@ cxx_14=False
         """ Define the required info that the consumers/users of this package will have
         to add to their projects
         """
-        libs = [("enable_util", "PocoUtil"),               
+        libs = [("enable_util", "PocoUtil"),
                 ("enable_mongodb", "PocoMongoDB"),
                 ("enable_pdf", "PocoPDF"),
                 ("enable_net", "PocoNet"),
@@ -173,7 +174,7 @@ cxx_14=False
 
         self.cpp_info.libs.append("PocoFoundation")
 
-        if self.settings.os == "Windows" and self.options.shared == False: 
+        if self.settings.os == "Windows" and self.options.shared == False:
             if self.settings.compiler.runtime == "MT" or self.settings.compiler.runtime == "MTd":
                 self.cpp_info.libs = ["%smt" % lib for lib in self.cpp_info.libs]
             else:
