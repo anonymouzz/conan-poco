@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.0)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 CONAN_BASIC_SETUP()
 
+set(CMAKE_CXX_FLAGS -stdlib=libc++)
+
 ADD_EXECUTABLE(echo EchoServer.cpp)
 TARGET_LINK_LIBRARIES(echo ${CONAN_LIBS})
 

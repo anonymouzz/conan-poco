@@ -8,9 +8,9 @@ from conans import CMake
 
 class PocoConan(ConanFile):
     name = "Poco"
-    version = "1.7.5.1"
-    url="http://github.com/anonymouzz/conan-poco"
-    exports = "CMakeLists.txt"
+    version = "1.7.6"
+    url = "http://github.com/anonymouzz/conan-poco"
+    exports = "CMakeLists*"
     generators = "cmake", "txt"
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False],
@@ -37,7 +37,8 @@ class PocoConan(ConanFile):
                "force_openssl": [True, False], #  "Force usage of OpenSSL even under windows"
                "enable_tests": [True, False],
                "poco_unbundled": [True, False],
-               "cxx_14": [True, False]
+               "cxx_14": [True, False],
+               "enable_redis": [True, False],
                }
     default_options = '''
 shared=False
@@ -65,21 +66,23 @@ force_openssl=True
 enable_tests=False
 poco_unbundled=False
 cxx_14=False
+enable_redis=False
 '''
 
     def source(self):
         zip_name = "poco-%s-release.zip" % self.version
-        download("https://github.com/anonymouzz/poco/archive/%s" % zip_name, zip_name)
+        download("https://github.com/pocoproject/poco/archive/%s" % zip_name, zip_name)
         unzip(zip_name)
         shutil.move("poco-poco-%s-release" % self.version, "poco")
         os.unlink(zip_name)
         shutil.move("poco/CMakeLists.txt", "poco/CMakeListsOriginal.cmake")
+        shutil.move("CMakeListsOriginal.cmake.with-pic", "poco/CMakeListsOriginal.cmake.with-pic")
         shutil.move("CMakeLists.txt", "poco/CMakeLists.txt")
 
     def config(self):
         if self.options.enable_netssl or self.options.enable_netssl_win or self.options.enable_crypto or self.options.force_openssl:
             # self.output.warn("ENABLED OPENSSL DEPENDENCY!!")
-            self.requires.add("OpenSSL/1.0.2h@lasote/stable", private=False)
+            self.requires.add("OpenSSL/1.0.2h@anonymouz/stable", private=False)
             self.options["OpenSSL"].shared = self.options.shared
             if self.options.shared and self.settings.compiler == "apple-clang" \
                 and self.settings.compiler.version == "7.3":

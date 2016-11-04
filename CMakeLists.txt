@@ -10,5 +10,9 @@ else()
     MESSAGE("Not activating CXX_STANDARD 14")
 endif()
 
+if(CMAKE_CXX_COMPILER MATCHES ".*clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+endif()
 
-include("CMakeListsOriginal.cmake")
+
+include("CMakeListsOriginal.cmake.with-pic")
